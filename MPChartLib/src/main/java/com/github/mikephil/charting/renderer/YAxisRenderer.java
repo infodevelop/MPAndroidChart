@@ -7,6 +7,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.RectF;
 
+import com.github.mikephil.charting.components.HighlightedArea;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
@@ -347,6 +348,46 @@ public class YAxisRenderer extends AxisRenderer {
             }
 
             c.restoreToCount(clipRestoreCount);
+        }
+    }
+
+    protected float[] mRenderHighlightedAreaBuffer = new float[4];
+
+    public void renderHighlightedAreas(Canvas c) {
+        List<HighlightedArea> highlightedAreas = mYAxis.getHighlightedAreas();
+
+        if(highlightedAreas == null || highlightedAreas.size() <= 0)
+            return;
+
+        float[] position = mRenderHighlightedAreaBuffer;
+        position[0] = position[1] = position[2] = position[3] = 0;
+
+        mHighlightedAreaPaint = new Paint();
+        mHighlightedAreaPaint.setStyle(Paint.Style.FILL);
+
+        for(int i = 0; i < highlightedAreas.size(); i++) {
+            HighlightedArea area = highlightedAreas.get(i);
+
+            if(!area.isEnabled())
+                continue;
+
+            position[1] = area.getStartValue();
+            position[3] = area.getEndValue();
+
+            mHighlightedAreaPaint.setColor(area.getBackgroundColor());
+            mHighlightedAreaPaint.setStrokeWidth(area.getLineWidth());
+            mHighlightedAreaPaint.setPathEffect(area.getDashPathEffect());
+
+            mTrans.pointValuesToPixel(position);
+
+            if(position[1] > mViewPortHandler.contentBottom()) {
+                position[1] = mViewPortHandler.contentBottom();
+            }
+            if(position[3] < mViewPortHandler.contentTop()) {
+                position[3] = mViewPortHandler.contentTop();
+            }
+
+            c.drawRect(mViewPortHandler.contentLeft(), position[1], mViewPortHandler.contentRight(), position[3], mHighlightedAreaPaint);
         }
     }
 }

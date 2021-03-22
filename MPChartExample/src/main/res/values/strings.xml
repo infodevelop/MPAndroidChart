@@ -38,6 +38,8 @@
     <string name="actionAddDataSet">Add Data Set</string>
     <string name="actionRemoveDataSet">Remove Data Set</string>
     <string name="actionClearChart">Clear chart</string>
+    <string name="actionXAxisAddHighlightedArea">Add Highlighted Area to X-Axis</string>
+    <string name="actionYAxisAddHighlightedArea">Add Highlighted Area to Y-Axis</string>
 
     <string name="actionTogglePercent">Toggle Percent</string>
     <string name="actionToggleMinAngles">Toggle Minimum Angles</string>

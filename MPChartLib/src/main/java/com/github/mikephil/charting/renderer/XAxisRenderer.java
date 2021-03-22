@@ -8,6 +8,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.RectF;
 
+import com.github.mikephil.charting.components.HighlightedArea;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.XAxis.XAxisPosition;
@@ -396,6 +397,48 @@ public class XAxisRenderer extends AxisRenderer {
                 mLimitLinePaint.setTextAlign(Align.RIGHT);
                 c.drawText(label, position[0] - xOffset, mViewPortHandler.contentBottom() - yOffset, mLimitLinePaint);
             }
+        }
+    }
+
+    protected float[] mRenderHighlightedAreaBuffer = new float[4];
+
+    public void renderHighlightedAreas(Canvas c) {
+        List<HighlightedArea> highlightedAreas = mXAxis.getHighlightedAreas();
+
+        if(highlightedAreas == null || highlightedAreas.size() <= 0)
+            return;
+
+        float[] position = mRenderHighlightedAreaBuffer;
+        //position[0] = position[1] = position[2] = position[3] = 0;
+
+        mHighlightedAreaPaint = new Paint();
+        mHighlightedAreaPaint.setStyle(Paint.Style.FILL);
+
+        for(int i = 0; i < highlightedAreas.size(); i++) {
+            HighlightedArea area = highlightedAreas.get(i);
+
+            if(!area.isEnabled())
+                continue;
+
+            position[0] = area.getStartValue();
+            position[2] = area.getEndValue();
+
+            mHighlightedAreaPaint.setColor(area.getBackgroundColor());
+            mHighlightedAreaPaint.setStrokeWidth(area.getLineWidth());
+            mHighlightedAreaPaint.setPathEffect(area.getDashPathEffect());
+
+            mTrans.pointValuesToPixel(position);
+
+            if(position[0] < mViewPortHandler.contentLeft()) {
+                position[0] = mViewPortHandler.contentLeft();
+            }
+            if(position[2] > mViewPortHandler.contentRight()) {
+                position[2] = mViewPortHandler.contentRight();
+            }
+            if(position[0] <= mViewPortHandler.contentRight() && position[2] >= mViewPortHandler.contentLeft()) {
+                c.drawRect(position[0], mViewPortHandler.contentTop(), position[2], mViewPortHandler.contentBottom(), mHighlightedAreaPaint);
+            }
+
         }
     }
 }

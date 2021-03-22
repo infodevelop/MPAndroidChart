@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
@@ -118,6 +119,11 @@ public abstract class AxisBase extends ComponentBase {
     protected boolean mDrawGridLinesBehindData = true;
 
     /**
+     * Highlighted Area 그려질 위치를 설정하는 플래그
+     */
+    protected boolean mDrawHighlightedAreaBehindData = true;
+
+    /**
      * Extra spacing for `axisMinimum` to be added to automatically calculated `axisMinimum`
      */
     protected float mSpaceMin = 0.f;
@@ -186,6 +192,11 @@ public abstract class AxisBase extends ComponentBase {
     }
 
     /**
+     * Highlighted Area 컴포넌트 리스트
+     */
+    protected List<HighlightedArea> mHighlightedAreas;
+
+    /**
      * default constructor
      */
     public AxisBase() {
@@ -193,6 +204,7 @@ public abstract class AxisBase extends ComponentBase {
         this.mXOffset = Utils.convertDpToPixel(5f);
         this.mYOffset = Utils.convertDpToPixel(5f);
         this.mLimitLines = new ArrayList<LimitLine>();
+        this.mHighlightedAreas = new ArrayList<HighlightedArea>();
     }
 
     /**
@@ -492,6 +504,14 @@ public abstract class AxisBase extends ComponentBase {
 
     public boolean isDrawGridLinesBehindDataEnabled() {
         return mDrawGridLinesBehindData;
+    }
+
+    public void setDrawHighlightedAreaBehindData(boolean enabled) {
+        mDrawHighlightedAreaBehindData = enabled;
+    }
+
+    public boolean isDrawHighlightedAreaBehindDataEnabled() {
+        return mDrawHighlightedAreaBehindData;
     }
 
     /**
@@ -812,5 +832,33 @@ public abstract class AxisBase extends ComponentBase {
     public void setSpaceMax(float mSpaceMax)
     {
         this.mSpaceMax = mSpaceMax;
+    }
+
+    /**
+     * Highlighted Area 컴포넌트 추가
+     */
+    public void addHighlightedArea(HighlightedArea area) {
+        mHighlightedAreas.add(area);
+    }
+
+    /**
+     * Highlighted Area 컴포넌트 삭제
+     */
+    public void removeHighlightedArea(HighlightedArea area) {
+        mHighlightedAreas.remove(area);
+    }
+
+    /**
+     * Highlighted Area 전체 영역 삭제
+     */
+    public void removeAllHighlightedArea() {
+        mHighlightedAreas.clear();
+    }
+
+    /**
+     * Highlighted Area List 전체 획득
+     */
+    public List<HighlightedArea> getHighlightedAreas() {
+        return mHighlightedAreas;
     }
 }

@@ -45,6 +45,11 @@ public abstract class AxisRenderer extends Renderer {
      */
     protected Paint mLimitLinePaint;
 
+    /**
+     * Highlighted Area 페인트
+     */
+    protected Paint mHighlightedAreaPaint;
+
     public AxisRenderer(ViewPortHandler viewPortHandler, Transformer trans, AxisBase axis) {
         super(viewPortHandler);
 
@@ -68,6 +73,9 @@ public abstract class AxisRenderer extends Renderer {
 
             mLimitLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             mLimitLinePaint.setStyle(Paint.Style.STROKE);
+
+            mHighlightedAreaPaint = new Paint();
+            mHighlightedAreaPaint.setStyle(Paint.Style.FILL);
         }
     }
 

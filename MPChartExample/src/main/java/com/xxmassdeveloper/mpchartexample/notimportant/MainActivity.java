@@ -25,6 +25,7 @@ import com.xxmassdeveloper.mpchartexample.CubicLineChartActivity;
 import com.xxmassdeveloper.mpchartexample.DynamicalAddingActivity;
 import com.xxmassdeveloper.mpchartexample.FilledLineActivity;
 import com.xxmassdeveloper.mpchartexample.HalfPieChartActivity;
+import com.xxmassdeveloper.mpchartexample.HighlightedAreaChartActivity;
 import com.xxmassdeveloper.mpchartexample.HorizontalBarChartActivity;
 import com.xxmassdeveloper.mpchartexample.HorizontalBarNegativeChartActivity;
 import com.xxmassdeveloper.mpchartexample.InvertedLineChartActivity;
@@ -123,6 +124,14 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         objects.add(36, new ContentItem("Realtime", "Add data points in realtime."));
         objects.add(37, new ContentItem("Hourly", "Uses the current time to add a data point for each hour."));
         //objects.add(38, new ContentItem("Realm.io Examples", "See more examples that use Realm.io mobile database."));
+
+        ////
+        objects.add(38, new ContentItem("Extension Charts (Info Charts)"));
+
+        objects.add(39, new ContentItem("Highlighted Area", "차트의 일부 영역을 색상으로 강조"));
+        objects.add(40, new ContentItem("Enhanced X-Axis Animation", "애니메이션 효과를 부드럽게 향상"));
+        objects.add(41, new ContentItem("Scroll Pager", "Pager 기능 구현"));
+        objects.add(42, new ContentItem("Date Label Support", "java.util.Date 의 날짜 형식 레이블 지원"));
 
         MyAdapter adapter = new MyAdapter(this, objects);
 
@@ -237,6 +246,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             /*case 38:
                 i = new Intent(this, RealmMainActivity.class);
                 break;*/
+            case 39:
+                i = new Intent(this, HighlightedAreaChartActivity.class);
+                break;
         }
 
         if (i != null) startActivity(i);

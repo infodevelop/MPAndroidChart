@@ -223,6 +223,15 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mAxisRight.isDrawGridLinesBehindDataEnabled())
             mAxisRendererRight.renderGridLines(canvas);
 
+        if(mXAxis.isEnabled() && mXAxis.isDrawHighlightedAreaBehindDataEnabled())
+            mXAxisRenderer.renderHighlightedAreas(canvas);
+
+        if(mAxisLeft.isEnabled() && mAxisLeft.isDrawHighlightedAreaBehindDataEnabled())
+            mAxisRendererLeft.renderHighlightedAreas(canvas);
+
+        if(mAxisRight.isEnabled() && mAxisRight.isDrawHighlightedAreaBehindDataEnabled())
+            mAxisRendererRight.renderHighlightedAreas(canvas);
+
         if (mXAxis.isEnabled() && mXAxis.isDrawLimitLinesBehindDataEnabled())
             mXAxisRenderer.renderLimitLines(canvas);
 
@@ -258,6 +267,15 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         canvas.restoreToCount(clipRestoreCount);
 
         mRenderer.drawExtras(canvas);
+
+        if(mXAxis.isEnabled() && !mXAxis.isDrawHighlightedAreaBehindDataEnabled())
+            mXAxisRenderer.renderHighlightedAreas(canvas);
+
+        if(mAxisLeft.isEnabled() && !mAxisLeft.isDrawHighlightedAreaBehindDataEnabled())
+            mAxisRendererLeft.renderHighlightedAreas(canvas);
+
+        if(mAxisRight.isEnabled() && !mAxisRight.isDrawHighlightedAreaBehindDataEnabled())
+            mAxisRendererRight.renderHighlightedAreas(canvas);
 
         if (mXAxis.isEnabled() && !mXAxis.isDrawLimitLinesBehindDataEnabled())
             mXAxisRenderer.renderLimitLines(canvas);
