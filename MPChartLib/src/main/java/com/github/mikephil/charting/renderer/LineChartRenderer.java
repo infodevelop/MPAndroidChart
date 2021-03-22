@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.charts.LineChart;
@@ -17,11 +18,15 @@ import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.LinearFunctionGraph;
 import com.github.mikephil.charting.utils.MPPointD;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+
+import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
+import org.apache.commons.math3.analysis.polynomials.PolynomialSplineFunction;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -55,6 +60,9 @@ public class LineChartRenderer extends LineRadarRenderer {
 
     protected Path cubicPath = new Path();
     protected Path cubicFillPath = new Path();
+
+    private final LinearFunctionGraph linearFunctionGraph = new LinearFunctionGraph();
+    SplineInterpolator interpolator = new SplineInterpolator();
 
     public LineChartRenderer(LineDataProvider chart, ChartAnimator animator,
                              ViewPortHandler viewPortHandler) {
@@ -115,11 +123,18 @@ public class LineChartRenderer extends LineRadarRenderer {
             default:
             case LINEAR:
             case STEPPED:
-                drawLinear(c, dataSet);
+                if(mChart.isEnhancedXAxisAnimation())
+                    drawEnhancedLinear(c, dataSet);
+                else
+                    drawLinear(c, dataSet);
+
                 break;
 
             case CUBIC_BEZIER:
-                drawCubicBezier(dataSet);
+                if(mChart.isEnhancedXAxisAnimation())
+                    drawEnhancedCubicBezier(dataSet);
+                else
+                    drawCubicBezier(dataSet);
                 break;
 
             case HORIZONTAL_BEZIER:
@@ -435,6 +450,284 @@ public class LineChartRenderer extends LineRadarRenderer {
 
         mRenderPaint.setPathEffect(null);
     }
+
+    protected void drawEnhancedLinear(Canvas c, ILineDataSet dataSet) {
+        int entryCount = dataSet.getEntryCount();
+
+        final boolean isDrawSteppedEnabled = dataSet.getMode() == LineDataSet.Mode.STEPPED;
+        final int pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
+
+        Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
+
+        float phaseY = mAnimator.getPhaseY();
+        float phaseX = mAnimator.getPhaseX();
+
+        mRenderPaint.setStyle(Paint.Style.STROKE);
+
+        Canvas canvas = null;
+
+        // if the data-set is dashed, draw on bitmap-canvas
+        if (dataSet.isDashedLineEnabled()) {
+            canvas = mBitmapCanvas;
+        } else {
+            canvas = c;
+        }
+
+        mXBounds.set(mChart, dataSet);
+
+        // if drawing filled is enabled
+        if (dataSet.isDrawFilledEnabled() && entryCount > 0) {
+            drawLinearFill(c, dataSet, trans, mXBounds);
+        }
+
+        // more than 1 color
+        if (dataSet.getColors().size() > 1) {
+
+            //TODO: 수정 필요
+
+            if (mLineBuffer.length <= pointsPerEntryPair * 2)
+                mLineBuffer = new float[pointsPerEntryPair * 4];
+
+            for (int j = mXBounds.min; j <= mXBounds.range + mXBounds.min; j++) {
+
+                Entry e = dataSet.getEntryForIndex(j);
+                if (e == null) continue;
+
+                mLineBuffer[0] = e.getX();
+                mLineBuffer[1] = e.getY() * phaseY;
+
+                if (j < mXBounds.max) {
+
+                    e = dataSet.getEntryForIndex(j + 1);
+
+                    if (e == null) break;
+
+                    if (isDrawSteppedEnabled) {
+                        mLineBuffer[2] = e.getX();
+                        mLineBuffer[3] = mLineBuffer[1];
+                        mLineBuffer[4] = mLineBuffer[2];
+                        mLineBuffer[5] = mLineBuffer[3];
+                        mLineBuffer[6] = e.getX();
+                        mLineBuffer[7] = e.getY() * phaseY;
+                    } else {
+                        mLineBuffer[2] = e.getX();
+                        mLineBuffer[3] = e.getY() * phaseY;
+                    }
+
+                } else {
+                    mLineBuffer[2] = mLineBuffer[0];
+                    mLineBuffer[3] = mLineBuffer[1];
+                }
+
+                trans.pointValuesToPixel(mLineBuffer);
+
+                if (!mViewPortHandler.isInBoundsRight(mLineBuffer[0]))
+                    break;
+
+                // make sure the lines don't do shitty things outside
+                // bounds
+                if (!mViewPortHandler.isInBoundsLeft(mLineBuffer[2])
+                        || (!mViewPortHandler.isInBoundsTop(mLineBuffer[1]) && !mViewPortHandler
+                        .isInBoundsBottom(mLineBuffer[3])))
+                    continue;
+
+                // get the color that is set for this line-segment
+                mRenderPaint.setColor(dataSet.getColor(j));
+
+                canvas.drawLines(mLineBuffer, 0, pointsPerEntryPair * 2, mRenderPaint);
+            }
+
+        } else { // only one color per dataset
+
+            if (mLineBuffer.length < Math.max((entryCount) * pointsPerEntryPair, pointsPerEntryPair) * 2)
+                mLineBuffer = new float[Math.max((entryCount) * pointsPerEntryPair, pointsPerEntryPair) * 4];
+
+            Entry e1, e2;
+            Entry firstEntry, lastEntry;
+            float between = 0f;
+
+            e1 = dataSet.getEntryForIndex(mXBounds.min);
+            firstEntry = dataSet.getEntryForIndex(mXBounds.min);
+            lastEntry = dataSet.getEntryForIndex(mXBounds.max);
+            between = lastEntry.getX() - firstEntry.getX();
+
+            if (e1 != null) {
+
+                int j = 0;
+                for (int x = mXBounds.min; x <= mXBounds.range + mXBounds.min; x++) {
+
+                    try {
+                        e1 = dataSet.getEntryForIndex(x == 0 ? 0 : x);
+                        e2 = dataSet.getEntryForIndex(x + 1);
+                    } catch (IndexOutOfBoundsException e) {
+                        continue;
+                    }
+
+
+
+                    if (e1 == null || e2 == null || lastEntry == null) continue;
+
+                    linearFunctionGraph.set(e1.getX(), e1.getY(), e2.getX(), e2.getY());
+
+                    mLineBuffer[j++] = e1.getX();
+                    mLineBuffer[j++] = e1.getY() * phaseY;
+
+                    if (isDrawSteppedEnabled) {
+                        //mLineBuffer[j++] = e2.getX();
+                        mLineBuffer[j++] = Math.min((between * phaseX) + firstEntry.getX(), e2.getX());
+                        mLineBuffer[j++] = e1.getY() * phaseY;
+                        //mLineBuffer[j++] = e2.getX();
+                        mLineBuffer[j++] = Math.min((between * phaseX) + firstEntry.getX(), e2.getX());
+                        mLineBuffer[j++] = e1.getY() * phaseY;
+                    }
+
+                    //mLineBuffer[j++] = e2.getX();
+                    mLineBuffer[j++] = Math.min((between * phaseX) + firstEntry.getX(), e2.getX());
+                    //mLineBuffer[j++] = e2.getY() * phaseY;
+                    mLineBuffer[j++] = (float) linearFunctionGraph.getY(Math.min((between * phaseX) + firstEntry.getX(), e2.getX())) * phaseY;
+                }
+
+                if (j > 0) {
+                    trans.pointValuesToPixel(mLineBuffer);
+
+                    final int size = Math.max((mXBounds.range + 1) * pointsPerEntryPair, pointsPerEntryPair) * 2;
+
+                    mRenderPaint.setColor(dataSet.getColor());
+
+                    canvas.drawLines(mLineBuffer, 0, size, mRenderPaint);
+                }
+
+                //Log.e("Log", "phaseX : " + phaseX);
+            }
+        }
+
+        mRenderPaint.setPathEffect(null);
+    }
+
+    protected void drawEnhancedCubicBezier(ILineDataSet dataSet) {
+        float phaseY = mAnimator.getPhaseY();
+        float phaseX = mAnimator.getPhaseX();
+
+        Log.e("Log", "phaseX : " + phaseX);
+
+        Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
+
+        mXBounds.set(mChart, dataSet);
+
+        float intensity = dataSet.getCubicIntensity();
+
+        cubicPath.reset();
+
+        //if (mXBounds.range >= 1) {
+
+        float prevDx = 0f;
+        float prevDy = 0f;
+        float curDx = 0f;
+        float curDy = 0f;
+
+        float firstX;
+        float firstY;
+        float secondX;
+        float secondY;
+        float thirdX;
+        float thirdY;
+
+        float animX;
+
+        // Take an extra point from the left, and an extra from the right.
+        // That's because we need 4 points for a cubic bezier (cubic=4), otherwise we get lines moving and doing weird stuff on the edges of the chart.
+        // So in the starting `prev` and `cur`, go -2, -1
+        // And in the `lastIndex`, add +1
+
+        final int firstIndex = mXBounds.min + 1;
+        final int lastIndex = mXBounds.min + mXBounds.range;
+
+        Entry firstEntry = dataSet.getEntryForIndex(mXBounds.min);
+        Entry lastEntry = dataSet.getEntryForIndex(mXBounds.max);
+        float between = lastEntry.getX() - firstEntry.getX();
+
+        Entry prevPrev;
+        Entry prev = dataSet.getEntryForIndex(Math.max(firstIndex - 2, 0));
+        Entry cur = dataSet.getEntryForIndex(Math.max(firstIndex - 1, 0));
+        Entry next = cur;
+        int nextIndex = firstIndex;
+
+        if (cur == null) return;
+
+        double[] xArray = new double[dataSet.getEntryCount()];
+        double[] yArray = new double[dataSet.getEntryCount()];
+
+        for (int i = 0; i < dataSet.getEntryCount() ; i++) {
+            xArray[i] = dataSet.getEntryForIndex(i).getX();
+            yArray[i] = dataSet.getEntryForIndex(i).getY();
+        }
+
+        PolynomialSplineFunction splineFunction = interpolator.interpolate(xArray, yArray);
+
+        // let the spline start
+        cubicPath.moveTo(cur.getX(), cur.getY() * phaseY);
+
+        for (int j = mXBounds.min; j <= mXBounds.range + mXBounds.min + 1; j++) {
+
+            if(j >= dataSet.getEntryCount()) continue;
+
+            prevPrev = prev;
+            prev = cur;
+            cur = nextIndex == j ? next : dataSet.getEntryForIndex(j);
+
+            nextIndex = j + 1 < dataSet.getEntryCount() ? j + 1 : j;
+            next = dataSet.getEntryForIndex(nextIndex);
+
+            prevDx = (cur.getX() - prevPrev.getX()) * intensity;
+            prevDy = (cur.getY() - prevPrev.getY()) * intensity;
+            curDx = (next.getX() - prev.getX()) * intensity;
+            curDy = (next.getY() - prev.getY()) * intensity;
+
+            //cubicPath.cubicTo(prev.getX() + prevDx, (prev.getY() + prevDy) * phaseY,
+            //        cur.getX() - curDx, (cur.getY() - curDy) * phaseY,
+            //        cur.getX(), cur.getY() * phaseY);
+
+            animX = (float) (firstEntry.getX() + (between * phaseX));
+
+            firstX = Math.min(prev.getX(), animX);
+            firstY = (float) splineFunction.value(firstX);
+            secondX = Math.min((cur.getX() - prev.getX()) / 2 + prev.getX(), animX);
+            secondY = (float) splineFunction.value(secondX);
+            thirdX = Math.min(cur.getX(), animX);
+            thirdY = (float) splineFunction.value(thirdX);
+
+            //Log.e("Log", "firstX : " + firstX + ", firstY : " + firstY +
+            //        "\nsecondX : " + secondX + ", secondY : " + secondY +
+            //        "\nthirdX : " + thirdX + ", thirdY : " + thirdY +
+            //        "\nanimX : " + animX +
+            //        "\n");
+
+            cubicPath.cubicTo(firstX, firstY * phaseY,
+                    secondX, secondY * phaseY,
+                    thirdX, thirdY * phaseY);
+        }
+        //}
+
+        // if filled is enabled, close the path
+        if (dataSet.isDrawFilledEnabled()) {
+
+            cubicFillPath.reset();
+            cubicFillPath.addPath(cubicPath);
+
+            drawCubicFill(mBitmapCanvas, dataSet, cubicFillPath, trans, mXBounds);
+        }
+
+        mRenderPaint.setColor(dataSet.getColor());
+
+        mRenderPaint.setStyle(Paint.Style.STROKE);
+
+        trans.pathValueToPixel(cubicPath);
+
+        mBitmapCanvas.drawPath(cubicPath, mRenderPaint);
+
+        mRenderPaint.setPathEffect(null);
+    }
+
 
     protected Path mGenerateFilledPathBuffer = new Path();
 

@@ -23,6 +23,7 @@ import com.xxmassdeveloper.mpchartexample.CandleStickChartActivity;
 import com.xxmassdeveloper.mpchartexample.CombinedChartActivity;
 import com.xxmassdeveloper.mpchartexample.CubicLineChartActivity;
 import com.xxmassdeveloper.mpchartexample.DynamicalAddingActivity;
+import com.xxmassdeveloper.mpchartexample.EnhancedAnimationChartActivity;
 import com.xxmassdeveloper.mpchartexample.FilledLineActivity;
 import com.xxmassdeveloper.mpchartexample.HalfPieChartActivity;
 import com.xxmassdeveloper.mpchartexample.HighlightedAreaChartActivity;
@@ -248,6 +249,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 break;*/
             case 39:
                 i = new Intent(this, HighlightedAreaChartActivity.class);
+                break;
+
+            case 40:
+                i = new Intent(this, EnhancedAnimationChartActivity.class);
                 break;
         }
 

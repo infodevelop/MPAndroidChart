@@ -37,7 +37,7 @@ import com.xxmassdeveloper.mpchartexample.notimportant.DemoBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.OnSeekBarChangeListener {
+public class EnhancedAnimationChartActivity extends DemoBase implements SeekBar.OnSeekBarChangeListener {
 
     private LineChart chart;
     private SeekBar seekBarX, seekBarY;
@@ -50,9 +50,8 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_linechart);
 
-        setTitle("Highlighted Area");
+        setTitle("Enhanced X-Axis Animation");
 
-        chart = findViewById(R.id.chart1);
         tvX = findViewById(R.id.tvXMax);
         tvY = findViewById(R.id.tvYMax);
 
@@ -62,6 +61,7 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
         seekBarY = findViewById(R.id.seekBar2);
         seekBarY.setMax(180);
         seekBarY.setOnSeekBarChangeListener(this);
+
 
         {   // // Chart Style // //
             chart = findViewById(R.id.chart1);
@@ -94,6 +94,8 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
 
             // force pinch zoom along both axis
             chart.setPinchZoom(true);
+
+            chart.setEnhancedXAxisAnimation(true);
         }
 
         XAxis xAxis;
@@ -153,12 +155,12 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
         }
 
         // add data
-        seekBarX.setProgress(45);
+        seekBarX.setProgress(10);
         seekBarY.setProgress(180);
-        setData(45, 180);
+        setData(10, 180);
 
         // draw points over time
-        chart.animateX(1500);
+        chart.animateX(3000);
 
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
@@ -218,7 +220,7 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
             set1.enableDashedHighlightLine(10f, 5f, 0f);
 
             // set the filled area
-            set1.setDrawFilled(true);
+            set1.setDrawFilled(false);
             set1.setFillFormatter(new IFillFormatter() {
                 @Override
                 public float getFillLinePosition(ILineDataSet dataSet, LineDataProvider dataProvider) {
@@ -248,7 +250,7 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.highlighted, menu);
+        getMenuInflater().inflate(R.menu.enhanced_animation, menu);
         return true;
     }
 
@@ -262,29 +264,9 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
                 startActivity(i);
                 break;
             }
-            case R.id.actionAddHighlightedAreaXAxis: {
-                int startValue = (int) (Math.random() * (seekBarX.getProgress() + 1));
-                int endValue = (int) (Math.random() * (seekBarX.getProgress() - startValue + 1) + startValue);
-
-                HighlightedArea area = new HighlightedArea(startValue, endValue);
-                area.setLineColor(Color.YELLOW);
-                area.setBackgroundColor(Color.argb(80, (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255)));
-                area.setLineWidth(2f);
-                chart.getXAxis().addHighlightedArea(area);
-                chart.invalidate();
-                break;
-            }
-            case R.id.actionAddHighlightedAreaYAxis: {
-                int startValue = (int) (Math.random() * seekBarY.getProgress() + 1);
-                int endValue = (int) (Math.random() * (seekBarY.getProgress() - startValue + 1) + startValue);
-
-                HighlightedArea area = new HighlightedArea(startValue, endValue);
-                area.setLineColor(Color.YELLOW);
-                area.setBackgroundColor(Color.argb(80, (int)(Math.random() * 255), (int)(Math.random() * 255), (int)(Math.random() * 255)));
-                area.setLineWidth(2f);
-                chart.getAxisLeft().addHighlightedArea(area);
-                chart.invalidate();
-                break;
+            case R.id.actionToggleEnhancedAnimation: {
+                chart.setEnhancedXAxisAnimation(!chart.isEnhancedXAxisAnimation());
+                chart.animateX(3000);
             }
             case R.id.actionToggleValues: {
                 List<ILineDataSet> sets = chart.getData()
@@ -429,9 +411,10 @@ public class HighlightedAreaChartActivity extends DemoBase implements SeekBar.On
         }
         return true;
     }
+
     @Override
     protected void saveToGallery() {
-        saveToGallery(chart, "HighlightedAreaChartActivity");
+        saveToGallery(chart, "EnhancedAnimationChartActivity");
     }
 
     @Override

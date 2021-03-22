@@ -10,7 +10,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <activity android:name=".HighlightedAreaChartActivity"></activity>
+        <activity android:name=".EnhancedAnimationChartActivity"></activity>
+        <activity android:name=".HighlightedAreaChartActivity" />
         <activity
             android:name=".notimportant.MainActivity"
             android:label="@string/app_name">

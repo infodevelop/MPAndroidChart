@@ -131,6 +131,11 @@ public class CombinedChart extends BarLineChartBase<CombinedData> implements Com
     }
 
     @Override
+    public boolean isEnhancedXAxisAnimation() {
+        return false;
+    }
+
+    @Override
     public BarData getBarData() {
         if (mData == null)
             return null;

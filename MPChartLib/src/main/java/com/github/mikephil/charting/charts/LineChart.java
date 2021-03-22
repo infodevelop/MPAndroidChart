@@ -15,6 +15,8 @@ import com.github.mikephil.charting.renderer.LineChartRenderer;
  */
 public class LineChart extends BarLineChartBase<LineData> implements LineDataProvider {
 
+    boolean mIsEnhancedXAxisAnimation = false;
+
     public LineChart(Context context) {
         super(context);
     }
@@ -46,5 +48,14 @@ public class LineChart extends BarLineChartBase<LineData> implements LineDataPro
             ((LineChartRenderer) mRenderer).releaseBitmap();
         }
         super.onDetachedFromWindow();
+    }
+
+    public void setEnhancedXAxisAnimation(boolean mIsEnhancedXAxisAnimation) {
+        this.mIsEnhancedXAxisAnimation = mIsEnhancedXAxisAnimation;
+    }
+
+    @Override
+    public boolean isEnhancedXAxisAnimation() {
+        return mIsEnhancedXAxisAnimation;
     }
 }
