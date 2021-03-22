@@ -96,6 +96,8 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
+        //mGestureDetector.onTouchEvent(event);
+
         if (mVelocityTracker == null) {
             mVelocityTracker = VelocityTracker.obtain();
         }
@@ -108,9 +110,9 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             }
         }
 
-        if (mTouchMode == NONE) {
+        //if (mTouchMode == NONE) {
             mGestureDetector.onTouchEvent(event);
-        }
+        //}
 
         if (!mChart.isDragEnabled() && (!mChart.isScaleXEnabled() && !mChart.isScaleYEnabled()))
             return true;
