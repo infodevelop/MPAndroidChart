@@ -13,6 +13,7 @@ import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.data.BarLineScatterCandleBubbleData;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.helper.GestureHelper;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarLineScatterCandleBubbleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
@@ -321,6 +322,7 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         mMatrix.set(mSavedMatrix);
 
         OnChartGestureListener l = mChart.getOnChartGestureListener();
+        GestureHelper helper = mChart.getGestureHelper();
 
         // check if axis is inverted
         if (inverted()) {
@@ -337,6 +339,12 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
         if (l != null)
             l.onChartTranslate(event, distanceX, distanceY);
+
+        if (helper != null) {
+            helper.onChartTranslate(event, distanceX, distanceY);
+        }
+
+
     }
 
     /**
@@ -577,6 +585,12 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             l.onChartDoubleTapped(e);
         }
 
+        GestureHelper helper = mChart.getGestureHelper();
+
+        if(helper != null) {
+            helper.onChartDoubleTapped(e);
+        }
+
         // check if double-tap zooming is enabled
         if (mChart.isDoubleTapToZoomEnabled() && mChart.getData().getEntryCount() > 0) {
 
@@ -595,6 +609,10 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
                 l.onChartScale(e, scaleX, scaleY);
             }
 
+            if (helper != null) {
+                helper.onChartScale(e, scaleX, scaleY);
+            }
+
             MPPointF.recycleInstance(trans);
         }
 
@@ -609,8 +627,13 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
         OnChartGestureListener l = mChart.getOnChartGestureListener();
 
         if (l != null) {
-
             l.onChartLongPressed(e);
+        }
+
+        GestureHelper helper = mChart.getGestureHelper();
+
+        if(helper != null) {
+            helper.onChartLongPressed(e);
         }
     }
 
@@ -623,6 +646,12 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
         if (l != null) {
             l.onChartSingleTapped(e);
+        }
+
+        GestureHelper helper = mChart.getGestureHelper();
+
+        if(helper != null) {
+            helper.onChartSingleTapped(e);
         }
 
         if (!mChart.isHighlightPerTapEnabled()) {
@@ -644,6 +673,12 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
 
         if (l != null) {
             l.onChartFling(e1, e2, velocityX, velocityY);
+        }
+
+        GestureHelper helper = mChart.getGestureHelper();
+
+        if(mChart.getGestureHelper() != null) {
+            helper.onChartFling(e1, e2, velocityX, velocityY);
         }
 
         return super.onFling(e1, e2, velocityX, velocityY);
@@ -695,6 +730,28 @@ public class BarLineChartTouchListener extends ChartTouchListener<BarLineChartBa
             mChart.postInvalidate();
 
             stopDeceleration();
+        }
+    }
+
+    @Override
+    public void startAction(MotionEvent me) {
+        super.startAction(me);
+
+        GestureHelper helper = mChart.getGestureHelper();
+
+        if(helper != null) {
+            helper.onChartGestureStart(me, mLastGesture);
+        }
+    }
+
+    @Override
+    public void endAction(MotionEvent me) {
+        super.endAction(me);
+
+        GestureHelper helper = mChart.getGestureHelper();
+
+        if(helper != null) {
+            helper.onChartGestureEnd(me, mLastGesture);
         }
     }
 }

@@ -19,6 +19,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.components.YAxis.AxisDependency;
 import com.github.mikephil.charting.data.BarLineScatterCandleBubbleData;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.helper.GestureHelper;
 import com.github.mikephil.charting.highlight.ChartHighlighter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.dataprovider.BarLineScatterCandleBubbleDataProvider;
@@ -134,6 +135,11 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     protected Transformer mRightAxisTransformer;
 
     protected XAxisRenderer mXAxisRenderer;
+
+    /**
+     * 제스처 헬퍼
+     */
+    protected GestureHelper mGestureHelper;
 
     // /** the approximator object used for data filtering */
     // private Approximator mApproximator;
@@ -1661,6 +1667,15 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         }
 
         return null;
+    }
+
+    public GestureHelper getGestureHelper() {
+        return mGestureHelper;
+    }
+
+    public void setGestureHelper(GestureHelper mGestureHelper) {
+        this.mGestureHelper = mGestureHelper;
+        this.mGestureHelper.init(this);
     }
 
     protected float[] mOnSizeChangedBuffer = new float[2];

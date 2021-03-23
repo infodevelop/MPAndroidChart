@@ -44,6 +44,7 @@ import com.xxmassdeveloper.mpchartexample.R;
 import com.xxmassdeveloper.mpchartexample.RadarChartActivity;
 import com.xxmassdeveloper.mpchartexample.RealtimeLineChartActivity;
 import com.xxmassdeveloper.mpchartexample.ScatterChartActivity;
+import com.xxmassdeveloper.mpchartexample.ScrollPagerActivity;
 import com.xxmassdeveloper.mpchartexample.ScrollViewActivity;
 import com.xxmassdeveloper.mpchartexample.StackedBarActivity;
 import com.xxmassdeveloper.mpchartexample.StackedBarActivityNegative;
@@ -253,6 +254,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
             case 40:
                 i = new Intent(this, EnhancedAnimationChartActivity.class);
+                break;
+
+            case 41:
+                i = new Intent(this, ScrollPagerActivity.class);
                 break;
         }
 
