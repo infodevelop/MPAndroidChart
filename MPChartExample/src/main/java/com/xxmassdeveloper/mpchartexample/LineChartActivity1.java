@@ -172,7 +172,7 @@ public class LineChartActivity1 extends DemoBase implements OnSeekBarChangeListe
         setData(45, 180);
 
         // draw points over time
-        chart.animateX(1500);
+        chart.animateX(5000);
 
         chart.setOnChartGestureListener(new OnChartGestureListener() {
             @Override

@@ -17,6 +17,7 @@ public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
      * buffer for storing the current minimum and maximum visible x
      */
     protected XBounds mXBounds = new XBounds();
+    protected EnhancedXBounds mEnhancedXBounds = new EnhancedXBounds();
 
     public BarLineScatterCandleBubbleRenderer(ChartAnimator animator, ViewPortHandler viewPortHandler) {
         super(animator, viewPortHandler);
@@ -91,6 +92,24 @@ public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
             min = entryFrom == null ? 0 : dataSet.getEntryIndex(entryFrom);
             max = entryTo == null ? 0 : dataSet.getEntryIndex(entryTo);
             range = (int) ((max - min) * phaseX);
+        }
+    }
+
+    protected class EnhancedXBounds extends XBounds {
+
+        public void set(BarLineScatterCandleBubbleDataProvider chart, IBarLineScatterCandleBubbleDataSet dataSet) {
+            float phaseX = Math.max(0.f, Math.min(1.f, mAnimator.getPhaseX()));
+
+            float low = chart.getLowestVisibleX();
+            float high = chart.getHighestVisibleX();
+
+            Entry entryFrom = dataSet.getEntryForXValue(low, Float.NaN, DataSet.Rounding.DOWN);
+            Entry entryTo = dataSet.getEntryForXValue(high, Float.NaN, DataSet.Rounding.UP);
+            Entry entryPhase = dataSet.getEntryForXValue(((high - low) * phaseX) + low, Float.NaN, DataSet.Rounding.DOWN);
+
+            min = entryFrom == null ? 0 : dataSet.getEntryIndex(entryFrom);
+            max = entryTo == null ? 0 : dataSet.getEntryIndex(entryTo);
+            range = entryPhase == null ? 0 : dataSet.getEntryIndex(entryPhase);
         }
     }
 }

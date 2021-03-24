@@ -22,6 +22,7 @@ import com.xxmassdeveloper.mpchartexample.BubbleChartActivity;
 import com.xxmassdeveloper.mpchartexample.CandleStickChartActivity;
 import com.xxmassdeveloper.mpchartexample.CombinedChartActivity;
 import com.xxmassdeveloper.mpchartexample.CubicLineChartActivity;
+import com.xxmassdeveloper.mpchartexample.DateLabelActivity;
 import com.xxmassdeveloper.mpchartexample.DynamicalAddingActivity;
 import com.xxmassdeveloper.mpchartexample.EnhancedAnimationChartActivity;
 import com.xxmassdeveloper.mpchartexample.FilledLineActivity;
@@ -258,6 +259,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
             case 41:
                 i = new Intent(this, ScrollPagerActivity.class);
+                break;
+
+            case 42:
+                i = new Intent(this, DateLabelActivity.class);
                 break;
         }
 
