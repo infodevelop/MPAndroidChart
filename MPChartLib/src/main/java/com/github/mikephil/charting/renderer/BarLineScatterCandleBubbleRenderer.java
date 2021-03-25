@@ -109,7 +109,7 @@ public abstract class BarLineScatterCandleBubbleRenderer extends DataRenderer {
 
             min = entryFrom == null ? 0 : dataSet.getEntryIndex(entryFrom);
             max = entryTo == null ? 0 : dataSet.getEntryIndex(entryTo);
-            range = entryPhase == null ? 0 : dataSet.getEntryIndex(entryPhase);
+            range = entryPhase == null ? 0 : Math.min(dataSet.getEntryIndex(entryPhase), (int) ((max - min) * phaseX));
         }
     }
 }

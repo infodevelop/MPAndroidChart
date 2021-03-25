@@ -4,6 +4,7 @@ package com.github.mikephil.charting.utils;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
@@ -170,9 +171,12 @@ public class Transformer {
      */
     public float[] generateTransformedValuesLine(ILineDataSet data,
                                                  float phaseX, float phaseY,
-                                                 int min, int max) {
+                                                 int min, int max, int range) {
 
-        final int count = ((int) ((max - min) * phaseX) + 1) * 2;
+        final int count2 = ((int) ((max - min) * phaseX) + 1) * 2;
+        final int count = (range + 1) * 2;
+
+        Log.e("Transformer", "count : " + count + " / count2 : " + count2);
 
         if (valuePointsForGenerateTransformedValuesLine.length != count) {
             valuePointsForGenerateTransformedValuesLine = new float[count];

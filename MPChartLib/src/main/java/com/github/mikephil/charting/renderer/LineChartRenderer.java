@@ -862,7 +862,7 @@ public class LineChartRenderer extends LineRadarRenderer {
                 xBounds.set(mChart, dataSet);
 
                 float[] positions = trans.generateTransformedValuesLine(dataSet, mAnimator.getPhaseX(), mAnimator
-                        .getPhaseY(), xBounds.min, xBounds.max);
+                        .getPhaseY(), xBounds.min, xBounds.max, xBounds.range);
 
                 MPPointF iconsOffset = MPPointF.getInstance(dataSet.getIconsOffset());
                 iconsOffset.x = Utils.convertDpToPixel(iconsOffset.x);

@@ -173,19 +173,11 @@ public class EnhancedAnimationChartActivity extends DemoBase implements SeekBar.
 
         ArrayList<Entry> values = new ArrayList<>();
 
-        values.add(new Entry(12, 0, getResources().getDrawable(R.drawable.star)));
-        values.add(new Entry(15, 10, getResources().getDrawable(R.drawable.star)));
-        values.add(new Entry(16, 50, getResources().getDrawable(R.drawable.star)));
-        values.add(new Entry(20, 35, getResources().getDrawable(R.drawable.star)));
-        values.add(new Entry(25, 120, getResources().getDrawable(R.drawable.star)));
-        values.add(new Entry(28, 5, getResources().getDrawable(R.drawable.star)));
-        values.add(new Entry(36, 64, getResources().getDrawable(R.drawable.star)));
+        for (int i = 0; i < count; i++) {
 
-//        for (int i = 0; i < count; i++) {
-//
-//            float val = (float) (Math.random() * range) - 30;
-//            values.add(new Entry(i, val, getResources().getDrawable(R.drawable.star)));
-//        }
+            float val = (float) (Math.random() * range) - 30;
+            values.add(new Entry(i, val, getResources().getDrawable(R.drawable.star)));
+        }
 
         LineDataSet set1;
 
@@ -253,6 +245,7 @@ public class EnhancedAnimationChartActivity extends DemoBase implements SeekBar.
 
             // set data
             chart.setData(data);
+            chart.setVisibleXRangeMaximum(7f);
         }
     }
 
