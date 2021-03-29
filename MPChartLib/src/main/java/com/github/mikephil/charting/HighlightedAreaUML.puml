@@ -1,0 +1,96 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class ComponentBase
+abstract class Renderer
+
+abstract class AxisRenderer {
+    # mHighlightedAreaPaint: Paint
+    ...()
+}
+
+class HighlightedArea {
+    - mStartValue: float
+    - mEndValue: float
+    - mBackgroundColor: int
+    - mLineColor: int
+    - mLineWidth: float
+    - mDashPathEffect: DashPathEffect
+
+    + setStartValue(float): void
+    + getStartValue(): float
+    + setEndValue(float): void
+    + getEndValue(): float
+    + setBackgroundColor(int): void
+    + getBackgroundColor(): int
+    + setLineColor(int): void
+    + getLineColor(): int
+    + setDashPathEffect(DashPathEffect): void
+    + getDashPathEffect(): DashPathEffect
+    + setLineWidth(float): void
+    + getLineWidth(): float
+}
+
+class AxisBase {
+    # mHighlightedAreas: List<HighlightedArea>
+    # mDrawHighlightedAreaBehindData: boolean
+    ...
+
+    + addHighlightedArea(HighlightedArea): void
+    + removeHighlightedArea(HighlightedArea): void
+    + removeAllHighlightedArea(): void
+    + getHighlightedAreas(): List<HighlightedArea>
+    + setDrawHighlightedAreaBehindData(boolean): void
+    + isDrawHighlightedAreaBehindData(): boolean
+    ...()
+}
+
+class XAxisRenderer {
+    # mRenderHighlightedAreaBuffer: float[4]
+    ...
+
+    + renderHighlightedAreas(Canvas): void
+    ...()
+}
+
+class YAxisRenderer {
+    # mRenderHighlightedAreaBuffer: float[4]
+    ...
+
+    + renderHighlightedAreas(Canvas): void
+    ...()
+}
+
+class BarLineChartBase
+
+class XAxis
+
+class YAxis
+
+abstract class Chart
+
+class LineChart
+class BarChart
+
+ComponentBase <|-- AxisBase
+ComponentBase <|-- HighlightedArea
+
+Chart <|-- BarLineChartBase
+BarLineChartBase <|-- LineChart
+BarLineChartBase <|-- BarChart
+
+AxisBase <|-- XAxis
+AxisBase <|-- YAxis
+
+AxisBase <-- HighlightedArea
+Chart *-- XAxis
+BarLineChartBase *-- YAxis
+
+Renderer <|-- AxisRenderer
+AxisRenderer <|-- XAxisRenderer
+AxisRenderer <|-- YAxisRenderer
+
+BarLineChartBase *-- XAxisRenderer
+BarLineChartBase *-- YAxisRenderer
+
+@enduml

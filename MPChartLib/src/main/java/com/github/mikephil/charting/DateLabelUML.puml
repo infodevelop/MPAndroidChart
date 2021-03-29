@@ -1,0 +1,73 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class LongEntry {
+    - longX: long
+    - longY: long
+    - icon: Drawable
+    - data: Object
+
+    + getX(): long
+    + getY(): long
+    + getIcon(): Drawable
+    + getData(): Object
+}
+
+class LongEntryList {
+    - longEntries: ArrayList<LongEntry>
+    - referenceXValue: long
+    - referenceYValue: long
+
+    + addLongEntry(LongEntry): void
+    + removeLongEntry(LongEntry): void
+    + getEntry(): ArrayList<Entry>
+    + getReferenceXValue(): long
+    + getReferenceYValue(): long
+    - findReferenceXValue(ArrayList<LongEntry>): void
+    - findReferenceYValue(ArrayList<LongEntry>): void
+    - sortByXValue(ArrayList<LongEntry>): void
+}
+
+class LongValueFormatter {
+    - reference: long
+    + getFormattedValue(long): String
+    + getAxisLabel(long, AxisBase): String
+}
+
+interface IAxisValueFormatter {
+    + getFormattedValue(float, AxisBase): String
+}
+
+interface IValueFormatter {
+    + getFormattedValue(float, Entry, int, ViewPortHandler): String
+}
+
+interface Comparator<T> {
+    + compare(T, T): int
+}
+
+class LongEntryXComparator
+class LongEntryYComparator
+
+abstract class ValueFormatter {
+    + getFormattedValue(float): String
+    + getAxisLabel(float, AxisBase): String
+    + getBarLabel(BarEntry): String
+    + getBarStackedLabel(float, BarEntry): String
+    + getPointLabel(Entry): String
+    + getPieLabel(float, PieEntry): String
+    + getRadarLabel(RadarEntry): String
+    + getBubbleLabel(BubbleEntry): String
+    + getCandleLabel(CandleEntry): String
+}
+
+IAxisValueFormatter <|.. ValueFormatter
+IValueFormatter <|.. ValueFormatter
+ValueFormatter <|-- LongValueFormatter
+
+Comparator <|.. LongEntryXComparator
+Comparator <|.. LongEntryYComparator
+
+LongEntry -> LongEntryList : "*"
+
+@enduml

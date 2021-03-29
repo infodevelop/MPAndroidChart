@@ -1,0 +1,35 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class LineChart {
+    - mIsEnhancedXAxisAnimation: boolean
+
+    + setEnhancedXAxisAnimation(boolean): void
+    + isEnhancedXAxisAnimation(): boolean
+}
+
+interface LineDataProvider {
+    + isEnhancedXAxisAnimation(): boolean
+    ...()
+}
+
+class LineChartRenderer {
+    - linearFunctionGraph: LinearFunctionGraph
+    - interpolator: SplineInterpolator
+
+    # drawEnhancedLinear(Canvas, ILineDataSet): void
+    # drawEnhancedCubicBezier(ILineDataSet): void
+}
+
+class LinearFunctionGraph {
+    - slope: double
+    - yIntercept: double
+
+    + set(double, double, double, double): void
+    + getY(double): double
+}
+
+LineDataProvider <|.. LineChart
+LineChart *-- LineChartRenderer
+LineChartRenderer <- LinearFunctionGraph
+@enduml

@@ -1,0 +1,76 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class BarLineChartBase {
+    # mGestureHelper: GestureHelper
+
+    + getGestureHelper(): GestureHelper
+    + setGestureHelper(GestureHelper): void
+}
+
+interface OnChartGestureListener {
+    + onChartGestureStart(MotionEvent, ChartTouchListener.ChartGesture): void
+    + onChartGestureEnd(MotionEvent, ChartTouchListener.ChartGesture): void
+    + onChartFling(MotionEvent, MotionEvent, float, float): void
+    + onChartTranslate(MotionEvent, float, float)
+    + onChartDoubleTapped(MotionEvent)
+    + onChartLongPressed(MotionEvent)
+    + onChartScale(MotionEvent, float, float)
+    + onChartSingleTapped(MotionEvent)
+}
+
+abstract class GestureHelper {
+    # mChart: Chart
+
+    + init(Chart): void
+}
+
+class PagerGestureHelper {
+    - GESTURE_SENSITIVITY: int
+    - FAST_GESTURE_RATIO: int
+    - mVisiblePointXValue: float
+    - mVisiblePointYValue: float
+    - mPreviousPointXValue: float
+    - mNextPointXValue: float
+    - mNextPointYValue: float
+    - mPageNo: int
+    - mReferenceDataSet: IDataSet
+    - mChartGesture: ChartGesture
+
+    + setGestureSensitivity(int): void
+    + setFastGestureRatio(int): void
+    + init(BarLineChartBase): void
+    - moveToFirstVisibleValue(): void
+    - moveToPreviousPage(int, YAxis.AxisDependency, long): void
+    - moveToNextPage(int, YAxis.AxisDependency, long): void
+    - moveToVisiblePage(YAxis.AxisDependency, long): void
+    - getPageNoByXValue(float): void
+    - changePointValueByPageNo(pageNo): void
+}
+
+abstract class ChartTouchListener
+
+class BarLineChartTouchListener {
+    - helper: GestureHelper
+}
+
+enum PagerGestureHelper.ChartGesture {
+    START
+    SCROLL
+    FLING
+    END
+}
+
+class LineChart
+class BarChart
+
+OnChartGestureListener <|.. GestureHelper
+GestureHelper <|-- PagerGestureHelper
+BarLineChartBase <... GestureHelper
+PagerGestureHelper.ChartGesture - PagerGestureHelper
+BarLineChartBase <|-- LineChart
+BarLineChartBase <|-- BarChart
+BarLineChartBase *-- BarLineChartTouchListener
+ChartTouchListener <|-- BarLineChartTouchListener
+
+@enduml
