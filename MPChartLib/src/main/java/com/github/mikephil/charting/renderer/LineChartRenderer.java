@@ -21,6 +21,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.LinearFunctionGraph;
 import com.github.mikephil.charting.utils.MPPointD;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.github.mikephil.charting.utils.SplineInterpolatorCache;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.Utils;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -61,10 +62,10 @@ public class LineChartRenderer extends LineRadarRenderer {
     protected Path cubicPath = new Path();
     protected Path cubicFillPath = new Path();
 
-    protected final int mCubicLineDefinition = 5;
+    protected final int mCubicLineDefinition = 100;
 
+    private final SplineInterpolatorCache mSplineInterpolatorCache = new SplineInterpolatorCache();
     private final LinearFunctionGraph linearFunctionGraph = new LinearFunctionGraph();
-    SplineInterpolator interpolator = new SplineInterpolator();
 
     public LineChartRenderer(LineDataProvider chart, ChartAnimator animator,
                              ViewPortHandler viewPortHandler) {
@@ -611,7 +612,6 @@ public class LineChartRenderer extends LineRadarRenderer {
         float phaseX = mAnimator.getPhaseX();
 
         final boolean isDrawSteppedEnabled = dataSet.getMode() == LineDataSet.Mode.STEPPED;
-        final int pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
 
         Log.e("Log", "phaseX : " + phaseX);
 
@@ -638,9 +638,6 @@ public class LineChartRenderer extends LineRadarRenderer {
         float interval;
         int bufferIndex;
 
-        double[] xArray = new double[dataSet.getEntryCount()];
-        double[] yArray = new double[dataSet.getEntryCount()];
-
         int entryCount = dataSet.getEntryCount();
 
         Entry firstEntry, lastEntry;
@@ -650,63 +647,63 @@ public class LineChartRenderer extends LineRadarRenderer {
         lastEntry = dataSet.getEntryForIndex(mEnhancedXBounds.max);
         between = lastEntry.getX() - firstEntry.getX();
 
-        int totalPointCount = Math.max((entryCount) * pointsPerEntryPair * mCubicLineDefinition, pointsPerEntryPair * mCubicLineDefinition);
-        if (mLineBuffer.length < totalPointCount * 2)
-            mLineBuffer = new float[totalPointCount * 4];
-
-        for (int i = 0; i < dataSet.getEntryCount() ; i++) {
-            xArray[i] = dataSet.getEntryForIndex(i).getX();
-            yArray[i] = dataSet.getEntryForIndex(i).getY();
+        if(mCubicLineDefinition < entryCount) {
+            drawCubicBezier(dataSet);
         }
+        else {
+            if (mLineBuffer.length < mCubicLineDefinition * 2)
+                mLineBuffer = new float[mCubicLineDefinition * 4];
 
-        PolynomialSplineFunction splineFunction = interpolator.interpolate(xArray, yArray);
+            PolynomialSplineFunction splineFunction = mSplineInterpolatorCache.getCachedSplineFunction(dataSet);
 
-        mRenderPaint.setColor(dataSet.getColor());
+            mRenderPaint.setColor(dataSet.getColor());
 
-        mRenderPaint.setStyle(Paint.Style.STROKE);
+            mRenderPaint.setStyle(Paint.Style.STROKE);
 
-        for (int j = mEnhancedXBounds.min; j <= mEnhancedXBounds.min + mEnhancedXBounds.range; j++) {
-            Log.e("For", "phaseX : " + phaseX);
-            prev = dataSet.getEntryForIndex(Math.max(j, 0));
-            cur = dataSet.getEntryForIndex(j + 1);
+            interval = between / mCubicLineDefinition;
 
-            interval = (cur.getX() - prev.getX()) / mCubicLineDefinition;
-            firstX = prev.getX();
-            secondX = firstX + interval;
-            drawX = Math.min(firstEntry.getX() + (between * phaseX), cur.getX());
+            for (int j = mEnhancedXBounds.min; j <= mEnhancedXBounds.min + mEnhancedXBounds.range; j++) {
+                Log.e("For", "phaseX : " + phaseX);
+                prev = dataSet.getEntryForIndex(Math.max(j, 0));
+                cur = dataSet.getEntryForIndex(j + 1);
 
-            bufferIndex = 0;
+                firstX = prev.getX();
+                secondX = firstX + interval;
+                drawX = Math.min(firstEntry.getX() + (between * phaseX), cur.getX());
 
-            while(firstX <= drawX) {
-                mLineBuffer[bufferIndex++] = firstX;
-                mLineBuffer[bufferIndex++] = (float) splineFunction.value(firstX);
-                mLineBuffer[bufferIndex++] = secondX;
-                mLineBuffer[bufferIndex++] = (float) splineFunction.value(secondX);
+                bufferIndex = 0;
 
-                firstX = secondX;
-                secondX += interval;
+                while(firstX < drawX) {
+                    mLineBuffer[bufferIndex++] = firstX;
+                    mLineBuffer[bufferIndex++] = (float) (splineFunction.value(firstX)) * phaseY;
+                    mLineBuffer[bufferIndex++] = secondX;
+                    mLineBuffer[bufferIndex++] = (float) (splineFunction.value(secondX)) * phaseY;
+
+                    firstX = secondX;
+                    secondX += interval;
+                }
+
+                trans.pointValuesToPixel(mLineBuffer);
+
+                canvas.drawLines(mLineBuffer, mRenderPaint);
+
+                // if filled is enabled, close the path
+                if (dataSet.isDrawFilledEnabled()) {
+
+                    cubicFillPath.reset();
+                    cubicFillPath.addPath(cubicPath);
+
+                    drawCubicFill(mBitmapCanvas, dataSet, cubicFillPath, trans, mEnhancedXBounds);
+                }
+
+                //trans.pathValueToPixel(cubicPath);
+
+                //mBitmapCanvas.drawPath(cubicPath, mRenderPaint);
+
             }
 
-            trans.pointValuesToPixel(mLineBuffer);
-
-            canvas.drawLines(mLineBuffer, mRenderPaint);
-
-            // if filled is enabled, close the path
-            if (dataSet.isDrawFilledEnabled()) {
-
-                cubicFillPath.reset();
-                cubicFillPath.addPath(cubicPath);
-
-                drawCubicFill(mBitmapCanvas, dataSet, cubicFillPath, trans, mEnhancedXBounds);
-            }
-
-            //trans.pathValueToPixel(cubicPath);
-
-            //mBitmapCanvas.drawPath(cubicPath, mRenderPaint);
-
+            mRenderPaint.setPathEffect(null);
         }
-
-        mRenderPaint.setPathEffect(null);
     }
 
 

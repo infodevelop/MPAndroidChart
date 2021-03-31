@@ -100,4 +100,9 @@ public interface ILineDataSet extends ILineRadarDataSet<Entry> {
      * @return
      */
     IFillFormatter getFillFormatter();
+
+    /**
+     * 동일한 LineDataSet 인지 검사
+     */
+    boolean isEquals(ILineDataSet dataSet);
 }

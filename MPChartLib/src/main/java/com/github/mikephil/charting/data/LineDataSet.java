@@ -408,6 +408,27 @@ public class LineDataSet extends LineRadarDataSet<Entry> implements ILineDataSet
         return mFillFormatter;
     }
 
+    @Override
+    public boolean isEquals(ILineDataSet dataSet) {
+
+        if(dataSet.getEntryCount() != getEntryCount())
+            return false;
+
+        if(!dataSet.getLabel().equals(getLabel()))
+            return false;
+
+        Entry e1, e2;
+        for(int i = 0; i < getEntryCount(); i++) {
+            e1 = dataSet.getEntryForIndex(i);
+            e2 = getEntryForIndex(i);
+
+            if(e1.getX() != e2.getX() || e1.getY() != e2.getY())
+                return false;
+        }
+
+        return true;
+    }
+
     public enum Mode {
         LINEAR,
         STEPPED,
