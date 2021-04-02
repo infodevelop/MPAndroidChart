@@ -28,6 +28,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 
     implementation 'org.apache.commons:commons-math3:3.6.1'
+
+    androidTestImplementation("org.mockito:mockito-android:2.24.5")
+    testImplementation 'org.mockito:mockito-inline:2.21.0'
 }
 
 task sourcesJar(type: Jar) {

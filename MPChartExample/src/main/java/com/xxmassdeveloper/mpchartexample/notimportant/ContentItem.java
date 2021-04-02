@@ -3,7 +3,7 @@ package com.xxmassdeveloper.mpchartexample.notimportant;
 /**
  * Created by Philipp Jahoda on 07/12/15.
  */
-class ContentItem {
+public class ContentItem {
 
     final String name;
     final String desc;

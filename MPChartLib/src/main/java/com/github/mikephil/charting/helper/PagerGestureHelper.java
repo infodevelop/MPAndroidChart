@@ -145,6 +145,10 @@ public class PagerGestureHelper extends GestureHelper<BarLineChartBase> {
     public void onChartSingleTapped(MotionEvent me) {
     }
 
+    public int getVisiblePageNo() {
+        return mPageNo;
+    }
+
     private void moveToFirstVisibleValue() {
         IDataSet dataSet;
         Entry firstVisibleEntry = null, temp;

@@ -19,7 +19,7 @@ public class DateLabelSupportTest {
     LongValueFormatter formatter;
 
     @Before
-    public void before() {
+    public void setUp() {
         for(int i = 1 ; i <= 15 ; i++) {
             list.add(new LongEntry(Date.UTC(2021, 4, i, 12, 0, 0), (long) (Math.random() * 10)));
         }
