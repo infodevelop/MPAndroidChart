@@ -54,7 +54,7 @@ public class BarDataTest {
 
         assertEquals(-992f, values1.get(0).getX(), 0.01f);
         assertEquals(-981f, values2.get(0).getX(), 0.01f);
-        assertEquals(-965f, values1.get(1).getX(), 0.01f);
+        assertEquals(-965f, values1.get(1).getX(), 0.01f); 
         assertEquals(-954f, values2.get(1).getX(), 0.01f);
 
         data.setBarWidth(20f);

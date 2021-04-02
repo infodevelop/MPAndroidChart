@@ -650,7 +650,7 @@ public class LineChartRenderer extends LineRadarRenderer {
         if(mCubicLineDefinition < entryCount) {
             drawCubicBezier(dataSet);
         }
-        else {
+        else if(entryCount > 1) {
             if (mLineBuffer.length < mCubicLineDefinition * 2)
                 mLineBuffer = new float[mCubicLineDefinition * 4];
 
@@ -665,10 +665,10 @@ public class LineChartRenderer extends LineRadarRenderer {
             for (int j = mEnhancedXBounds.min; j <= mEnhancedXBounds.min + mEnhancedXBounds.range; j++) {
                 Log.e("For", "phaseX : " + phaseX);
                 prev = dataSet.getEntryForIndex(Math.max(j, 0));
-                cur = dataSet.getEntryForIndex(j + 1);
+                cur = dataSet.getEntryForIndex(Math.min(j + 1, dataSet.getEntryCount() - 1));
 
                 firstX = prev.getX();
-                secondX = firstX + interval;
+                secondX = Math.min(firstX + interval, cur.getX());
                 drawX = Math.min(firstEntry.getX() + (between * phaseX), cur.getX());
 
                 bufferIndex = 0;
@@ -681,6 +681,7 @@ public class LineChartRenderer extends LineRadarRenderer {
 
                     firstX = secondX;
                     secondX += interval;
+                    secondX = Math.min(secondX, cur.getX());
                 }
 
                 trans.pointValuesToPixel(mLineBuffer);

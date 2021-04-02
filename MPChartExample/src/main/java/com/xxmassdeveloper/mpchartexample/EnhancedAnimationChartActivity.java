@@ -245,7 +245,7 @@ public class EnhancedAnimationChartActivity extends DemoBase implements SeekBar.
 
             // set data
             chart.setData(data);
-            chart.setVisibleXRangeMaximum(7f);
+            //chart.setVisibleXRangeMaximum(7f);
         }
     }
 
