@@ -1,5 +1,9 @@
 ![symbol](https://user-images.githubusercontent.com/57319751/113797582-82c38780-978c-11eb-8c1a-443597935f4a.png)
 
+![Generic badge](https://img.shields.io/badge/MPChartLibrary-v3.1.0-blue.svg)
+![Generic badge](https://img.shields.io/badge/ExtensionLibrary-v1.0.0-red.svg)
+![Generic badge](https://img.shields.io/badge/API-+14-green.svg)
+
 # Info-MPChart Extension Library For Android
 
 **Info-MPChart Extension**은 `MPAndroidChart 확장 라이브러리` 입니다.
