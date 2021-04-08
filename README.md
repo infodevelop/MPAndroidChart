@@ -1,3 +1,5 @@
+![symbol](https://user-images.githubusercontent.com/57319751/113797582-82c38780-978c-11eb-8c1a-443597935f4a.png)
+
 # Info-MPChart Extension Library For Android
 
 **Info-MPChart Extension**은 `MPAndroidChart 확장 라이브러리` 입니다.
@@ -11,8 +13,6 @@ iOS 버전의 라이브러리를 사용하고자 한다면, 여기를 눌러주�
 적용할 프로젝트 Gradle에 **MPAndroidChart의 종속성이 추가되어 있다면 제거**해주세요. 라이브러리 간의 충돌이 발생할 수 있습니다.
 
 ### AAR
-
----
 
 1. **'Info-MPChartExtension_vX.Y.Z.aar'** 파일을 아래 경로로 이동시킵니다.
 
@@ -35,9 +35,7 @@ iOS 버전의 라이브러리를 사용하고자 한다면, 여기를 눌러주�
 
 ## 1. Highlighted Area
 
----
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/78dc6863-c08a-4b86-ad44-8141517cb36b/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/78dc6863-c08a-4b86-ad44-8141517cb36b/Untitled.png)
+![image](https://user-images.githubusercontent.com/57319751/113980750-d1068280-9881-11eb-9ab5-45ef0810c32e.png)
 
 차트의 X 혹은 Y 축에 강조 영역을 생성합니다. 사진의 초록색과 파란색 영역이 `HighlightedArea` 로 강조된 영역입니다.
 
@@ -83,9 +81,8 @@ iOS 버전의 라이브러리를 사용하고자 한다면, 여기를 눌러주�
 
 ## 2. Enhanced X-AxisAnimation
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/efbde7a1-38b6-4971-8047-4dc12b9e97c4/Enhanced_Animation_As-Is.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/efbde7a1-38b6-4971-8047-4dc12b9e97c4/Enhanced_Animation_As-Is.gif)
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/41d7f1d0-bbd4-4d32-921d-7940067dd63e/Enhanced_Animation_To-Be.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/41d7f1d0-bbd4-4d32-921d-7940067dd63e/Enhanced_Animation_To-Be.gif)
+![Enhanced Animation As-Is](https://user-images.githubusercontent.com/57319751/113980879-f1ced800-9881-11eb-985d-e96542dfede6.gif)
+![Enhanced Animation To-Be](https://user-images.githubusercontent.com/57319751/113980885-f4313200-9881-11eb-82bd-a079a5d8f41e.gif)
 
 X축으로 증감하는 애니메이션을 부드럽게 나오도록 설정할 수 있습니다. 곡선으로 구성된 `LineChart` 에도 해당 기능이 적용됩니다.
 
@@ -125,7 +122,7 @@ X축으로 증감하는 애니메이션을 부드럽게 나오도록 설정할 �
 
 ## 3. Scroll Pager
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9b5f0997-08f7-46b8-ad23-7d25da943b6e/pager_helper.gif](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9b5f0997-08f7-46b8-ad23-7d25da943b6e/pager_helper.gif)
+![pager helper](https://user-images.githubusercontent.com/57319751/113980953-0c08b600-9882-11eb-8e7d-cbe8c56ef6b1.gif)
 
 차트에 페이지 넘김 효과를 줍니다. 제스쳐를 하는 강도에 따라서 효과가 달라집니다. 
 
@@ -170,7 +167,7 @@ X축으로 증감하는 애니메이션을 부드럽게 나오도록 설정할 �
 
 ## 4. Date Label Support
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/76bc18a7-64c5-4a7a-a232-3612e1ce3faa/Untitled.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/76bc18a7-64c5-4a7a-a232-3612e1ce3faa/Untitled.png)
+![image](https://user-images.githubusercontent.com/57319751/113981041-26429400-9882-11eb-8c4a-c770a72aba17.png)
 
 차트 레이블에 `java.util.Date` 의 날짜 형식을 지원하는 기능입니다. 기존에 `Date` 클래스를 이용하여 날짜를 생성한 후 `Long` 형으로 변환하여 차트에 데이터를 추가할 경우, `Float` 형으로 변환되어 데이터가 잘리는 문제를 해결해줍니다.
 
