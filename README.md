@@ -6,7 +6,7 @@
 
 우리 회사 앱에서 사용되는 차트 부가 기능과 컴포넌트를 쉽게 사용할 수 있도록 Library화 했습니다.
 
-iOS 버전의 라이브러리를 사용하고자 한다면, 여기를 눌러주십시오.
+iOS 버전의 라이브러리를 사용하고자 한다면, [여기](https://github.com/infodevelop/Charts/tree/develop/InfoMining)를 눌러주십시오.
 
 # ⚙️ Setting
 
@@ -14,13 +14,15 @@ iOS 버전의 라이브러리를 사용하고자 한다면, 여기를 눌러주�
 
 ### AAR
 
-1. **'Info-MPChartExtension_vX.Y.Z.aar'** 파일을 아래 경로로 이동시킵니다.
+1. SDK 파일을 [다운로드](https://www.dropbox.com/s/dv7m5bx9r0pb1hp/Info-MPChartExtension_v1.0.0.aar?dl=0)합니다.
+
+2. **'Info-MPChartExtension_vX.Y.Z.aar'** 파일을 아래 경로로 이동시킵니다.
 
     ```kotlin
     app/libs
     ```
 
-2. app 모듈 단위의 Gradle 파일을 아래와 같이 수정합니다.
+1. app 모듈 단위의 Gradle 파일을 아래와 같이 수정합니다.
 
     ```kotlin
     dependencies {
@@ -269,4 +271,4 @@ X축으로 증감하는 애니메이션을 부드럽게 나오도록 설정할 �
 
 # 📄 Documentaion
 
-- SDK에 대한 상세한 정보는 JavaDoc을 통해 확인하실 수 있습니다.
+- SDK에 대한 상세한 정보는 [JavaDoc](https://www.dropbox.com/s/4qhleylibxr6uhn/Info-MPChart%20Extension%20SDK%20Document_v1.0.0_20210408_%EA%B9%80%EB%8B%A4%ED%9B%88.zip?dl=0)을 통해 확인하실 수 있습니다.
